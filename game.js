@@ -38,10 +38,15 @@ var forecolor = "#4a3f35";
 var linecolor = "2f2519";
 var linewidth = 5;
 var offset = -10;
-var yRatio = .4;
+var yRatio = .3;
 var t = 0;
 var speed = 0;
 var playing = true;
+var k = {
+    ArrowUp: 0,
+    ArrowLeft: 0,
+    ArrowRight: 0
+}
 
 player = new function () {
     this.x = c.width / 2;
@@ -65,9 +70,11 @@ player = new function () {
 
     this.drawInterface = function () {
         if (playing) {
-            ctx.drawImage(this.leftBtn, 20, c.height - 90, 70, 70);
-            ctx.drawImage(this.rightBtn, 110, c.height - 90, 70, 70);
-            ctx.drawImage(this.fireBtn, c.width - 90, c.height - 90, 70, 70);
+            if (mobilmi) {
+                ctx.drawImage(this.leftBtn, 20, c.height - 90, 70, 70);
+                ctx.drawImage(this.rightBtn, 110, c.height - 90, 70, 70);
+                ctx.drawImage(this.fireBtn, c.width - 90, c.height - 90, 70, 70);
+            }
         } else {
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
@@ -99,32 +106,25 @@ player = new function () {
         if (!playing || gnd && Math.abs(this.rot) > Math.PI * 0.5) {
             playing = false;
             this.rSpeed = 5;
+            k.ArrowUp = 1;
             this.x -= speed * 5;
 
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.font = "32px Impact";
-            ctx.fillStyle = "white";
-            ctx.fillText("GAME OVER", c.width / 2, c.height / 3);
-            ctx.drawImage(this.starBtn, (c.width / 2) - 25, (c.height / 3) + 50, 50, 50);
-
         }
-
-
-
-
-
+        //rotation calc
         var angle = Math.atan2((p2 - offset) - this.y, (this.x + 5) - this.x);
         if (gnd && playing) {
             this.rot -= (this.rot - angle) * 0.5;
             this.rSpeed = this.rSpeed - (angle - this.rot);
         }
 
+        this.rSpeed += (k.ArrowLeft - k.ArrowRight) * 0.05;
+        this.rot -= this.rSpeed * 0.05;
+
 
         this.rot -= this.rSpeed * 0.1;
 
         if (this.rot > Math.PI) this.rot = -Math.PI;
-        if (this.rot < -Math.PI) this.rot = -Math.PI;
+        if (this.rot < -Math.PI) this.rot = Math.PI;
 
 
 
@@ -145,8 +145,8 @@ player = new function () {
 
 //draw
 function draw() {
-    speed -= (speed - 1) * 0.01;
-    t += 5 * speed;
+    speed -= (speed - (k.ArrowUp)) * 0.01;
+    t += 10 * speed;
 
 
     ctx.fillStyle = bgcolor;
@@ -174,37 +174,63 @@ function draw() {
 
 draw();
 
-c.addEventListener("touchstart", handleStart, false);
-c.addEventListener("touchend", handleEnd, false);
+//mobile controls
+if (mobilmi) {
+    c.addEventListener("touchstart", handleStart, false);
+    c.addEventListener("touchend", handleEnd, false);
 
 
-function handleStart(evt) {
-    evt.preventDefault();
-    var touches = evt.changedTouches;
-    for (let i = 0; i < touches.length; i++) {
-        var touch = touches[i];
+    function handleStart(evt) {
+        evt.preventDefault();
+        var touches = evt.changedTouches;
+        for (let i = 0; i < touches.length; i++) {
+            var touch = touches[i];
 
-        if (!playing && touch.pageX > ((c.width / 2) - 25) && touch.pageX < ((c.width / 2) + 25) && touch.pageY > ((c.height / 3) + 50) && touch.pageY < ((c.height / 3) + 100)) {
-            window.location.reload();
+
         }
-        if (playing && touch.pageX > 20 && touch.pageX < 90 && touch.pageY > (c.height - 90) && touch.pageY < (c.height - 20)) {
-            window.location.reload();
-        }
-        if (playing && touch.pageX > 110 && touch.pageX < 180 && touch.pageY > (c.height - 90) && touch.pageY < (c.height - 20)) {
-            window.location.reload();
-        }
-        if (playing && touch.pageX > (c.width - 90) && touch.pageX < (c.width - 20) && touch.pageY > (c.height - 90) && touch.pageY < (c.height - 20)) {
-            window.location.reload();
+
+    }
+
+    function handleEnd(evt) {
+        evt.preventDefault();
+        var touches = evt.changedTouches;
+        for (let i = 0; i < touches.length; i++) {
+            var touch = touches[i];
+            checkBtnPress(touch.pageX, touch.pageY);
         }
     }
 
+} else {
+
+    //desktop controls
+
+    onkeydown = d => k[d.key] = 1;
+    onkeyup = d => [d.key] = 0;
+
+    c.addEventListener("click", handleClick, false);
+
+    function handleClick(evt) {
+        checkBtnPress(evt.clientX, evt.clientY);
+    }
 }
 
-function handleEnd(evt) {
-    evt.preventDefault();
-    var touches = evt.changedTouches;
-    for (let i = 0; i < touches.length; i++) {
-        var touch = touches[i];
-        //console.log(touch.pageX + ":" + touch.pageY);
+window.onresize = function () {
+    window.location.reload();
+}
+
+
+
+function checkBtnPress(x, y) {
+    if (!playing && x > ((c.width / 2) - 25) && x < ((c.width / 2) + 25) && y > ((c.height / 3) + 50) && y < ((c.height / 3) + 100)) {
+        window.location.reload();
+    }
+    if (playing && x > 20 && x < 90 && y > (c.height - 90) && y < (c.height - 20)) {
+        window.location.reload();
+    }
+    if (playing && x > 110 && x < 180 && y > (c.height - 90) && y < (c.height - 20)) {
+        window.location.reload();
+    }
+    if (playing && x > (c.width - 90) && x < (c.width - 20) && y > (c.height - 90) && y < (c.height - 20)) {
+        window.location.reload();
     }
 }
