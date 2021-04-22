@@ -80,7 +80,7 @@ player = new function () {
             ctx.textBaseline = "middle";
             ctx.font = "32px Impact";
             ctx.fillStyle = "white";
-            ctx.fillText("ASIM OMER", c.width / 2, c.height / 3);
+            ctx.fillText("ASIM VE OMER DAYINIZ SIZI COOKK SEVIYOR", c.width / 2, c.height / 3);
             ctx.drawImage(this.starBtn, (c.width / 2) - 25, (c.height / 3) + 50, 50, 50);
         }
         //interface draw
