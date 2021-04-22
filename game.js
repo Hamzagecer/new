@@ -56,6 +56,28 @@ player = new function () {
     //interface
     this.starBtn = new Image();
     this.starBtn.src = "./img/basla.png";
+    this.leftBtn = new Image();
+    this.leftBtn.src = "./img/sol.png";
+    this.rightBtn = new Image();
+    this.rightBtn.src = "./img/sag.png";
+    this.fireBtn = new Image();
+    this.fireBtn.src = "./img/gaz.png";
+
+    this.drawInterface = function () {
+        if (playing) {
+            ctx.drawImage(this.leftBtn, 20, c.height - 90, 70, 70);
+            ctx.drawImage(this.rightBtn, 110, c.height - 90, 70, 70);
+            ctx.drawImage(this.fireBtn, c.width - 90, c.height - 90, 70, 70);
+        } else {
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = "32px Impact";
+            ctx.fillStyle = "white";
+            ctx.fillText("GAME OVER", c.width / 2, c.height / 3);
+            ctx.drawImage(this.starBtn, (c.width / 2) - 25, (c.height / 3) + 50, 50, 50);
+        }
+        //interface draw
+    }
 
     this.draw = function () {
 
@@ -73,6 +95,7 @@ player = new function () {
             this.y = p1 - offset;
             gnd = 1;
         }
+        //fall check
         if (!playing || gnd && Math.abs(this.rot) > Math.PI * 0.5) {
             playing = false;
             this.rSpeed = 5;
@@ -106,6 +129,10 @@ player = new function () {
 
 
         this.y += this.ySpeed;
+        //drawing
+
+        //truck draw
+
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rot);
@@ -140,7 +167,7 @@ function draw() {
     ctx.fill();
     ctx.stroke();
 
-
+    player.drawInterface();
 
     requestAnimationFrame(draw)
 }
@@ -150,13 +177,23 @@ draw();
 c.addEventListener("touchstart", handleStart, false);
 c.addEventListener("touchend", handleEnd, false);
 
+
 function handleStart(evt) {
     evt.preventDefault();
     var touches = evt.changedTouches;
     for (let i = 0; i < touches.length; i++) {
         var touch = touches[i];
 
-        if (touch.pageX > ((c.width / 2) - 25) && touch.pageX < ((c.width / 2) + 25) && touch.pageY > ((c.height / 3) + 50) && touch.pageY < ((c.height / 3) + 100)) {
+        if (!playing && touch.pageX > ((c.width / 2) - 25) && touch.pageX < ((c.width / 2) + 25) && touch.pageY > ((c.height / 3) + 50) && touch.pageY < ((c.height / 3) + 100)) {
+            window.location.reload();
+        }
+        if (playing && touch.pageX > 20 && touch.pageX < 90 && touch.pageY > (c.height - 90) && touch.pageY < (c.height - 20)) {
+            window.location.reload();
+        }
+        if (playing && touch.pageX > 110 && touch.pageX < 180 && touch.pageY > (c.height - 90) && touch.pageY < (c.height - 20)) {
+            window.location.reload();
+        }
+        if (playing && touch.pageX > (c.width - 90) && touch.pageX < (c.width - 20) && touch.pageY > (c.height - 90) && touch.pageY < (c.height - 20)) {
             window.location.reload();
         }
     }
