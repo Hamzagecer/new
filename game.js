@@ -76,7 +76,7 @@ var player = new function () {
             ctx.textBaseline = "middle";
             ctx.font = "32px Impact";
             ctx.fillStyle = "white";
-            ctx.fillText("ASIM VE OMER DAYINIZ SIZI COOOK SEVIIYOOOR", c.width / 2, c.height / 3);
+            ctx.fillText("ASIM VE OMER YANDINIZ HAHHAHAAHAH :) :)", c.width / 2, c.height / 3);
             ctx.drawImage(this.startBtn, (c.width / 2) - 25, (c.height / 3) + 50, 50, 50);
         }
     }
@@ -197,7 +197,7 @@ if (mobilmi) {
 }
 
 window.onresize = function () {
-    //window.location.reload();
+    window.location.reload();
     // codepen icin
     //history.go(0);
 }
@@ -205,10 +205,9 @@ window.onresize = function () {
 
 function checkBtnPress(x, y) {
     if (!playing && x > ((c.width / 2) - 25) && x < ((c.width / 2) + 25) && y > ((c.height / 3) + 50) && y < ((c.height / 3) + 100)) {
-        //window.location.reload();
+        window.location.reload();
         // codepen icin
         //history.go(0);
-        alert("Sayfayı Yenile !");
     }
     if (playing && x > 20 && x < 90 && y > (c.height - 90) && y < (c.height - 20)) {
         k.ArrowLeft = 1;
@@ -223,9 +222,9 @@ function checkBtnPress(x, y) {
 
 function checkBtnRelase(x, y) {
     if (!playing && x > ((c.width / 2) - 25) && x < ((c.width / 2) + 25) && y > ((c.height / 3) + 50) && y < ((c.height / 3) + 100)) {
-        //window.location.reload();
-        // codepen icin
-        history.go(0);
+        window.location.reload();
+        // // codepen icin
+        // history.go(0);
     }
     if (playing && x > 20 && x < 90 && y > (c.height - 90) && y < (c.height - 20)) {
         k.ArrowLeft = 0;
